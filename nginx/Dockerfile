@@ -53,7 +53,6 @@ RUN ./configure \
 
 RUN rm -rf /tmp/*
 
-WORKDIR /
 
 # forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
@@ -64,7 +63,15 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     gettext-base \
     vim;
 
+WORKDIR /etc/nginx
 
+COPY server-defaults.conf include/server-defaults.conf
+
+
+# Env Overrideable configuration settings...
+COPY http-overrides.template.conf include/http-overrides.template
+ENV NGX_CLIENT_MAX_BODY_SIZE 10m
+ENV NGX_GZIP_ON_OFF off
 
 # standard listen ports
 EXPOSE 80 443
