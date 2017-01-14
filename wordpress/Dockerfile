@@ -1,4 +1,4 @@
-FROM docker_fpm
+FROM dockerlib_fpm
 
 # end copy from docker-library
 
@@ -15,8 +15,6 @@ RUN apt-get update && apt-get install -y \
 RUN echo "#!/bin/bash" > wp && \
     echo "sudo -u www-data php /usr/local/bin/wp-cli.phar \"\$@\"" > wp && \
     chmod 700 wp;
-# https://github.com/docker/docker/issues/8631
-RUN echo "export TERM=xterm" >> /etc/bash.bashrc
 
 # helper tool for setting salts in our dynamic wp-config
 COPY wp-salts.sh wp-salts

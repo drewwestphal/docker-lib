@@ -1,4 +1,4 @@
-FROM php:7.1.0-apache
+FROM php:7.1.0-fpm
 
 # from https://github.com/docker-library/wordpress/blob/master/php7.1/fpm/Dockerfile
 # installation of base wordpress necessities
@@ -27,4 +27,5 @@ RUN { \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
-
+# https://github.com/docker/docker/issues/8631
+RUN echo "export TERM=xterm" >> /etc/bash.bashrc
