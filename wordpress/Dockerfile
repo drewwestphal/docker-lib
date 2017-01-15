@@ -16,20 +16,33 @@ RUN echo "#!/bin/bash" > wp && \
     echo "sudo -u www-data php /usr/local/bin/wp-cli.phar \"\$@\"" > wp && \
     chmod 700 wp;
 
-# helper tool for setting salts in our dynamic wp-config
+# helper tools
+#for dynamic salts
 COPY wp-salts.sh wp-salts.sh
+#for resetting, fixing all perms
+COPY wp-perms.sh wp-perms.sh
 
+ENV WEB_ROOT /var/www/html
 WORKDIR /var/www/html
 
 ENV WORDPRESS_ABS_PATH /var/www/html/wp
 ENV WORDPRESS_SALTS_PATH "$WORDPRESS_ABS_PATH/salts.php"
-RUN mkdir -p "$WORDPRESS_ABS_PATH" && chown root:www-data "$WORDPRESS_ABS_PATH"; chmod 775 "$WORDPRESS_ABS_PATH";
+RUN mkdir -p "$WORDPRESS_ABS_PATH" && wp-perms.sh "$WORDPRESS_ABS_PATH";
 RUN wp core download --path="$WORDPRESS_ABS_PATH"
 RUN wp-salts.sh
 COPY wp-config.php "$WORDPRESS_ABS_PATH/wp-config.php"
 COPY index.php "$WORDPRESS_ABS_PATH/index.php"
 # we need these at the web root as well...
 # move themes as a convenience to new installs...
-RUN cp -r "$WORDPRESS_ABS_PATH/wp-config.php" "$WORDPRESS_ABS_PATH/index.php" "$WORDPRESS_ABS_PATH/wp-content/themes" ./
+RUN cp -r "$WORDPRESS_ABS_PATH/wp-config.php" "$WORDPRESS_ABS_PATH/index.php" && \
+    mv "$WORDPRESS_ABS_PATH/wp-content/themes/" ./ && \
+    mv "$WORDPRESS_ABS_PATH/wp-content/plugins/" ./ && \
+    rm -r "$WORDPRESS_ABS_PATH/wp-content" && \
+    mkdir -p ./uploads && \
+    wp-perms.sh
 
 VOLUME "/var/www/html"
+
+COPY docker-entrypoint.sh /usr/local/bin
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["php-fpm"]

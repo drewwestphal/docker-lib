@@ -2,17 +2,19 @@
 
 
 // FIRST: check for required env vars
-foreach([
-            'WORDPRESS_DB_NAME',
-            'WORDPRESS_DB_USER',
-            'WORDPRESS_DB_PASSWORD',
-            'WORDPRESS_DB_HOST',
-            'WORDPRESS_TABLE_PREFIX',
-            'WORDPRESS_HOME_URL',
-        ] as $requiredEnv) {
-
-    if(!getenv($requiredEnv)) {
-        die("Environment Variable $requiredEnv is not set");
+$requiredAll = [
+    'WORDPRESS_DB_NAME',
+    'WORDPRESS_DB_USER',
+    'WORDPRESS_DB_PASSWORD',
+    'WORDPRESS_DB_HOST',
+    'WORDPRESS_TABLE_PREFIX',
+    'WORDPRESS_HOME_URL',
+];
+foreach($requiredAll as $requiredVar) {
+    if(!getenv($requiredVar)) {
+        echo "required:";
+        print_r($requiredAll);
+        die("Environment Variable $requiredVar is not set");
     }
 }
 

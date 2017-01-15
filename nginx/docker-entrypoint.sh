@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # do envsubst automatically for all .template files
 #inspired by https://hub.docker.com/_/nginx/
