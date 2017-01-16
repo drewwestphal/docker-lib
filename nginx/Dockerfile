@@ -6,14 +6,17 @@ RUN echo "export TERM=xterm" >> /etc/bash.bashrc
 
 # install NGINX build prereqs
 # install NGINX build (incl curl for downloading)
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+RUN apt-get update && \
+    apt-get install -y \
         bash \
         build-essential \
         curl \
         libpcre3 libpcre3-dev \
         libssl1.0.0 libssl-dev \
         openssl \
-        zlib1g zlib1g-dev;
+        zlib1g zlib1g-dev && \
+    apt-get clean && \
+    rm -r /var/lib/apt/lists/*;
 
 
 ENV NGX_SRC_VERSION 1.11.8
@@ -59,9 +62,13 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log
 
 # install envsubst and other packages we like
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    gettext-base \
-    vim;
+RUN apt-get update && \
+    apt-get install -y \
+        gettext-base \
+        sudo \
+        vim && \
+    apt-get clean && \
+    rm -r /var/lib/apt/lists/*;
 
 WORKDIR /etc/nginx
 
@@ -69,9 +76,11 @@ COPY server-defaults.conf include/server-defaults.conf
 
 
 # Env Overrideable configuration settings...
+COPY root-overrides.template.conf include/root-overrides.template
 COPY http-overrides.template.conf include/http-overrides.template
 ENV NGX_CLIENT_MAX_BODY_SIZE 10m
 ENV NGX_GZIP_ON_OFF off
+ENV NGX_ERROR_LOG_LEVEL warn
 
 # standard listen ports
 EXPOSE 80 443

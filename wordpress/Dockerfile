@@ -11,7 +11,10 @@ RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.ph
 RUN apt-get update && apt-get install -y \
         less \
         sudo \
-        vim;
+        vim && \
+    apt-get clean && \
+    rm -r /var/lib/apt/lists/*;
+
 RUN echo "#!/bin/bash" > wp && \
     echo "sudo -u www-data php /usr/local/bin/wp-cli.phar \"\$@\"" > wp && \
     chmod 700 wp;
@@ -34,7 +37,7 @@ COPY wp-config.php "$WORDPRESS_ABS_PATH/wp-config.php"
 COPY index.php "$WORDPRESS_ABS_PATH/index.php"
 # we need these at the web root as well...
 # move themes as a convenience to new installs...
-RUN cp -r "$WORDPRESS_ABS_PATH/wp-config.php" "$WORDPRESS_ABS_PATH/index.php" && \
+RUN cp "$WORDPRESS_ABS_PATH/wp-config.php" "$WORDPRESS_ABS_PATH/index.php" ./ && \
     mv "$WORDPRESS_ABS_PATH/wp-content/themes/" ./ && \
     mv "$WORDPRESS_ABS_PATH/wp-content/plugins/" ./ && \
     rm -r "$WORDPRESS_ABS_PATH/wp-content" && \
