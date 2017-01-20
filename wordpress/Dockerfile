@@ -1,4 +1,4 @@
-FROM dockerlib_fpm
+FROM drewwestphal/fpm
 
 # end copy from docker-library
 
@@ -32,7 +32,6 @@ ENV WORDPRESS_ABS_PATH /var/www/html/wp
 ENV WORDPRESS_SALTS_PATH "$WORDPRESS_ABS_PATH/salts.php"
 RUN mkdir -p "$WORDPRESS_ABS_PATH" && wp-perms.sh "$WORDPRESS_ABS_PATH";
 RUN wp core download --path="$WORDPRESS_ABS_PATH"
-RUN wp-salts.sh
 COPY wp-config.php "$WORDPRESS_ABS_PATH/wp-config.php"
 COPY index.php "$WORDPRESS_ABS_PATH/index.php"
 # we need these at the web root as well...

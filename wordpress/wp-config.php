@@ -65,7 +65,7 @@ define('DB_COLLATE', '');
  *
  * @since 2.6.0
  */
-include(getenv('WORDPRESS_SALTS_PATH'));
+require(getenv('WORDPRESS_SALTS_PATH'));
 /**#@-*/
 
 /**
