@@ -52,5 +52,3 @@ RUN echo "America/New_York" > /etc/timezone
 
 # https://github.com/docker/docker/issues/8631
 RUN echo "export TERM=xterm" >> /etc/bash.bashrc
-
-ENV NGX_FPM_UPSTREAM "fpm:9000"

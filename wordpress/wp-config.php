@@ -107,6 +107,17 @@ define('WP_CONTENT_DIR', $_SERVER['DOCUMENT_ROOT']);
 define('WP_CONTENT_URL', $baseUrl);
 
 
+/**
+ * Handle SSL reverse proxy (from https://www.variantweb.net/blog/wordpress-behind-an-nginx-ssl-reverse-proxy/)
+ */
+if ($_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
+    $_SERVER['HTTPS']='on';
+
+if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+    $_SERVER['HTTP_HOST'] = $_SERVER['HTTP_X_FORWARDED_HOST'];
+}
+
+
 /* That's all, stop editing! Happy blogging. */
 
 /** Absolute path to the WordPress directory. */
