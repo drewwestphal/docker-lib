@@ -81,6 +81,7 @@ COPY server-defaults.conf include/server-defaults.conf
 # Env Overrideable configuration settings...
 COPY root-overrides.template.conf include/root-overrides.template
 COPY http-overrides.template.conf include/http-overrides.template
+ENV NGX_ROOT /var/www/html
 ENV NGX_CLIENT_MAX_BODY_SIZE 10m
 ENV NGX_GZIP_ON_OFF off
 ENV NGX_ERROR_LOG_LEVEL warn
