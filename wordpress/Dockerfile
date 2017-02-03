@@ -7,14 +7,6 @@ WORKDIR /usr/local/bin
 RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     -o ./wp-cli.phar;
 
-# tools to run wp-cli as www-data (including sudo) and to do poking around (vim)
-RUN apt-get update && apt-get install -y \
-        less \
-        sudo \
-        vim && \
-    apt-get clean && \
-    rm -r /var/lib/apt/lists/*;
-
 RUN echo "#!/bin/bash" > wp && \
     echo "sudo -u www-data php /usr/local/bin/wp-cli.phar \"\$@\"" > wp && \
     chmod 700 wp;

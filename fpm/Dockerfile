@@ -7,14 +7,23 @@ RUN set -ex; \
 	\
 	apt-get update; \
 	apt-get install -y \
+		libicu-dev \
 		libjpeg-dev \
+		libmcrypt-dev \
 		libpng12-dev \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
-	docker-php-ext-install gd mysqli opcache
+	docker-php-ext-configure intl; \
+	docker-php-ext-install gd mysqli opcache intl pdo pdo_mysql
 # TODO consider removing the *-dev deps and only keeping the necessary lib* packages
+
+# the above installs an old version of libicu from ubuntu, which
+# is not up to date for symfony use
+# we are operating under the assumption this does not matter
+# https://github.com/travis-ci/php-src-builder/blob/239e5287f3cabb95d6a25a3c2c5142138844b3cf/bin/install-icu
+
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -27,5 +36,21 @@ RUN { \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
+# tools to run wp-cli as www-data (including sudo) and to do poking around (vim)
+RUN apt-get update && apt-get install -y \
+        less \
+        sudo \
+        vim && \
+    apt-get clean && \
+    rm -r /var/lib/apt/lists/*;
+
+# install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin
+
+# set container to nyc time...
+RUN echo "America/New_York" > /etc/timezone
+
 # https://github.com/docker/docker/issues/8631
 RUN echo "export TERM=xterm" >> /etc/bash.bashrc
+
+ENV NGX_FPM_UPSTREAM "fpm:9000"

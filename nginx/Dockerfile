@@ -72,6 +72,9 @@ RUN apt-get update && \
 
 WORKDIR /etc/nginx
 
+# set container to nyc time...
+RUN echo "America/New_York" > /etc/timezone
+
 COPY server-defaults.conf include/server-defaults.conf
 
 
