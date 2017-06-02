@@ -1,4 +1,4 @@
-FROM php:7.1.1-fpm
+FROM php:7.1.5-fpm
 
 # from https://github.com/docker-library/wordpress/blob/master/php7.1/fpm/Dockerfile
 # installation of base wordpress necessities
