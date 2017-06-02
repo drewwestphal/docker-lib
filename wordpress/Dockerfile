@@ -17,13 +17,15 @@ COPY wp-salts.sh wp-salts.sh
 #for resetting, fixing all perms
 COPY wp-perms.sh wp-perms.sh
 
+ENV CONTAINER_WP_VERSION 4.7.5
+ENV CONTAINER_WP_LOCALE en_US
 ENV WEB_ROOT /var/www/html
 WORKDIR /var/www/html
 
-ENV WORDPRESS_ABS_PATH /var/www/html/wp
+ENV WORDPRESS_ABS_PATH "$WEB_ROOT/wp"
 ENV WORDPRESS_SALTS_PATH "$WORDPRESS_ABS_PATH/salts.php"
 RUN mkdir -p "$WORDPRESS_ABS_PATH" && wp-perms.sh "$WORDPRESS_ABS_PATH";
-RUN wp core download --path="$WORDPRESS_ABS_PATH"
+RUN wp core download --path="$WORDPRESS_ABS_PATH" --version="$CONTAINER_WP_VERSION"  --locale="$CONTAINER_WP_LOCALE"
 COPY wp-config.php "$WORDPRESS_ABS_PATH/wp-config.php"
 COPY index.php "$WORDPRESS_ABS_PATH/index.php"
 # we need these at the web root as well...
@@ -35,6 +37,6 @@ RUN cp "$WORDPRESS_ABS_PATH/wp-config.php" "$WORDPRESS_ABS_PATH/index.php" ./ &&
     mkdir -p ./uploads && \
     wp-perms.sh
 
-COPY docker-entrypoint.sh /usr/local/bin
-ENTRYPOINT ["docker-entrypoint.sh"]
+COPY wordpress-entrypoint.sh /usr/local/bin
+ENTRYPOINT ["wordpress-entrypoint.sh"]
 CMD ["php-fpm"]
