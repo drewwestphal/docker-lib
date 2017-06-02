@@ -35,8 +35,6 @@ RUN cp "$WORDPRESS_ABS_PATH/wp-config.php" "$WORDPRESS_ABS_PATH/index.php" ./ &&
     mkdir -p ./uploads && \
     wp-perms.sh
 
-VOLUME "/var/www/html"
-
 COPY docker-entrypoint.sh /usr/local/bin
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["php-fpm"]
