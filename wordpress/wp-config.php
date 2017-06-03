@@ -103,14 +103,14 @@ define('FS_METHOD', 'direct');
 $baseUrl = getenv('WORDPRESS_HOME_URL');
 define('WP_HOME', $baseUrl);
 define('WP_SITEURL', $baseUrl . '/wp');
-define('WP_CONTENT_DIR', $_SERVER['DOCUMENT_ROOT']);
+define('WP_CONTENT_DIR', getenv('WEB_ROOT'));
 define('WP_CONTENT_URL', $baseUrl);
 
 
 /**
  * Handle SSL reverse proxy (from https://www.variantweb.net/blog/wordpress-behind-an-nginx-ssl-reverse-proxy/)
  */
-if ($_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
+if ($_SERVER['HTTP_X_FORWARDED_PROTO']??'' == 'https')
     $_SERVER['HTTPS']='on';
 
 if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
