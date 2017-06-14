@@ -53,6 +53,7 @@ RUN wp core download \
 # create a subdirectory install
 COPY wp-config.php "$WORDPRESS_ABS_PATH/wp-config.php"
 COPY index.php "$WORDPRESS_ABS_PATH/index.php"
+
 # we need these at the web root as well...
 # move themes as a convenience to new installs...
 RUN cp "$WORDPRESS_ABS_PATH/wp-config.php" "$WORDPRESS_ABS_PATH/index.php" ./ && \

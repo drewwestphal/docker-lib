@@ -3,10 +3,7 @@
 
 // FIRST: check for required env vars
 $requiredAll = [
-    'WORDPRESS_DB_NAME',
-    'WORDPRESS_DB_USER',
-    'WORDPRESS_DB_PASSWORD',
-    'WORDPRESS_DB_HOST',
+    'WORDPRESS_MYSQL_DB_URL',
     'WORDPRESS_TABLE_PREFIX',
     'WORDPRESS_HOME_URL',
 ];
@@ -17,6 +14,7 @@ foreach($requiredAll as $requiredVar) {
         die("Environment Variable $requiredVar is not set");
     }
 }
+
 
 /**
  * The base configuration for WordPress
@@ -37,18 +35,19 @@ foreach($requiredAll as $requiredVar) {
  * @package WordPress
  */
 
+$database_url = getenv('WORDPRESS_MYSQL_DB_URL');
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define('DB_NAME', getenv('WORDPRESS_DB_NAME'));
+define('DB_NAME', explode('/', parse_url($database_url, PHP_URL_PATH))[1]);
 
 /** MySQL database username */
-define('DB_USER', getenv('WORDPRESS_DB_USER'));
+define('DB_USER', parse_url($database_url, PHP_URL_USER));
 
 /** MySQL database password */
-define('DB_PASSWORD', getenv('WORDPRESS_DB_PASSWORD'));
+define('DB_PASSWORD', parse_url($database_url, PHP_URL_PASS));
 
 /** MySQL hostname */
-define('DB_HOST', getenv('WORDPRESS_DB_HOST'));
+define('DB_HOST', parse_url($database_url, PHP_URL_HOST));
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
@@ -110,10 +109,11 @@ define('WP_CONTENT_URL', $baseUrl);
 /**
  * Handle SSL reverse proxy (from https://www.variantweb.net/blog/wordpress-behind-an-nginx-ssl-reverse-proxy/)
  */
-if ($_SERVER['HTTP_X_FORWARDED_PROTO']??'' == 'https')
-    $_SERVER['HTTPS']='on';
+if($_SERVER['HTTP_X_FORWARDED_PROTO']??'' == 'https') {
+    $_SERVER['HTTPS'] = 'on';
+}
 
-if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+if(isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
     $_SERVER['HTTP_HOST'] = $_SERVER['HTTP_X_FORWARDED_HOST'];
 }
 
