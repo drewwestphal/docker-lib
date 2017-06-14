@@ -2,7 +2,7 @@
 user  www-data;
 worker_processes  auto;
 
-include     /etc/nginx/include/root-overrides.conf;
+error_log   /var/log/nginx/error.log {{ NGX_ERROR_LOG_LEVEL }};
 pid         /var/run/nginx.pid;
 
 
@@ -27,7 +27,9 @@ http {
     access_log  /var/log/nginx/access.log  main;
 
     # some ideas from https://www.linode.com/docs/websites/nginx/configure-nginx-for-optimized-performance
-    include /etc/nginx/include/http-overrides.conf;
+    sendfile                    {{ NGX_SENDFILE }};
+    client_max_body_size        {{ NGX_CLIENT_MAX_BODY_SIZE }};
+    gzip                        {{ NGX_GZIP_ON_OFF }};
 
     keepalive_timeout   65;
     keepalive_requests  100000;

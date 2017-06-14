@@ -61,14 +61,15 @@ RUN rm -rf /tmp/*
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log
 
-# install envsubst and other packages we like
+# install envtpl (for building conf files) and other packages we like
 RUN apt-get update && \
     apt-get install -y \
-        gettext-base \
+        python3-pip \
         sudo \
         vim && \
     apt-get clean && \
-    rm -r /var/lib/apt/lists/*;
+    rm -r /var/lib/apt/lists/* && \
+    pip3 install envtpl;
 
 WORKDIR /etc/nginx
 
@@ -78,9 +79,6 @@ RUN echo "America/New_York" > /etc/timezone
 COPY server-defaults.conf include/server-defaults.conf
 
 
-# Env Overrideable configuration settings...
-COPY root-overrides.template.conf include/root-overrides.template
-COPY http-overrides.template.conf include/http-overrides.template
 ENV NGX_ROOT /var/www/html
 ENV NGX_CLIENT_MAX_BODY_SIZE 10m
 ENV NGX_GZIP_ON_OFF off
@@ -91,7 +89,7 @@ ENV NGX_SENDFILE on
 EXPOSE 80 443
 
 # our default conf
-COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx.conf.ngxtpl /etc/nginx/nginx.conf.ngxtpl
 
 COPY ./docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
