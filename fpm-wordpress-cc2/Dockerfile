@@ -1,6 +1,6 @@
-FROM drewwestphal/wordpress
+FROM drewwestphal/fpm-wordpress
 
-ENV TGMPA_PLUGIN_VERSION 0.1.3
+ENV TGMPA_PLUGIN_VERSION 0.3.0
 
 # install this the manual way, the other way keeps crashing
 ENV TGMPA_COMMAND_FILEPATH $WP_CLI_CONF_DIR/command.php

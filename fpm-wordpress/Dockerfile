@@ -1,9 +1,9 @@
 FROM drewwestphal/fpm
 
 ## IMPORTANT CONFIGURABLES
-ENV CONTAINER_WP_VERSION 4.7.5
+ENV CONTAINER_WP_VERSION 4.9.2
 ENV CONTAINER_WP_LOCALE en_US
-ENV WP_CLI_VERSION 1.2.0
+ENV WP_CLI_VERSION 1.4.1
 ENV WP_CLI_CONF_DIR /var/wp-cli
 ENV WP_CLI_USER www-data
 
@@ -19,9 +19,11 @@ RUN curl -L "https://github.com/wp-cli/wp-cli/releases/download/v$WP_CLI_VERSION
 
 # set up a directory for packages belonging to wp-cli extensions
 ENV WP_CLI_PACKAGES_DIR $WP_CLI_CONF_DIR/packages
+ENV WP_CLI_CACHE_DIR $WP_CLI_CONF_DIR/packages
 RUN mkdir -p "$WP_CLI_PACKAGES_DIR" && \
     chown $WP_CLI_USER "$WP_CLI_PACKAGES_DIR" && \
-    chmod 700 "$WP_CLI_PACKAGES_DIR"
+    chown $WP_CLI_USER "$WP_CLI_CACHE_DIR" && \
+    chmod 700 "$WP_CLI_PACKAGES_DIR" "$WP_CLI_CACHE_DIR"
 
 # build the command for wp
 # include environment variables (wordpress config needs them)

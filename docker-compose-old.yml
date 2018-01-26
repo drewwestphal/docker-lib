@@ -1,0 +1,69 @@
+version: '2'
+
+services:
+
+
+  nginx_wp:
+    image: drewwestphal/nginx_wp
+    environment:
+      VIRTUAL_HOST: lalala.local
+      NGX_SERVER_NAME: lalala.local dockerhost
+      NGX_ROOT: /var/www/html
+      NGX_ERROR_LOG_LEVEL: notice
+    links:
+      - wordpress:fpm
+    volumes_from:
+      - wordpress
+    networks:
+      - default
+      - proxy_network
+    ports:
+      - "8081:80"
+
+
+  nginx:
+    image: drewwestphal/nginx
+    build: ./nginx
+
+  nginx-tmpl:
+    image: drewwestphal/nginx-tmpl
+    build: ./nginx-tmpl
+
+  wordpress:
+    build: ./wordpress
+    image: drewwestphal/wordpress
+    environment:
+      WORDPRESS_DB_HOST: dh
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: 1234
+      WORDPRESS_DB_NAME: jccblog2017
+      WORDPRESS_TABLE_PREFIX: wp__
+      WORDPRESS_HOME_URL: http://lalala.local:90
+      WORDPRESS_WP_DEBUG: 1
+    extra_hosts:
+      - "dh:10.0.2.2"
+
+  cc2:
+    build: ./cc2
+    image: drewwestphal/cc2
+
+  pma:
+      image: phpmyadmin/phpmyadmin
+      container_name: phpmyadmin
+      environment:
+        VIRTUAL_HOST: pma.local
+        PMA_ABSOLUTE_URI: http://pma.local
+        PMA_HOST: dh
+      restart: always
+      volumes:
+       - /sessions
+      extra_hosts:
+        - "dh:10.0.2.2"
+      networks:
+        - default
+        - proxy_network
+
+networks:
+  proxy_network:
+    external:
+      name: frontendproxy_proxy_containers

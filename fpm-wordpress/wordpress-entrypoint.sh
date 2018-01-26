@@ -4,4 +4,4 @@ set -euo pipefail
 # run this on start to switch up cookie perms
 wp-salts.sh;
 
-exec "$@"
+exec fpm-entrypoint.sh "$@"

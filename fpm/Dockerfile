@@ -1,4 +1,4 @@
-FROM php:7.1.5-fpm
+FROM php:7.2.1-fpm
 
 # from https://github.com/docker-library/wordpress/blob/master/php7.1/fpm/Dockerfile
 # installation of base wordpress necessities
@@ -10,7 +10,7 @@ RUN set -ex; \
 		libicu-dev \
 		libjpeg-dev \
 		libmcrypt-dev \
-		libpng12-dev \
+		libpng-dev \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
@@ -37,18 +37,33 @@ RUN { \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 # tools to run wp-cli as www-data (including sudo) and to do poking around (vim)
+# composer depends on git and zip
 RUN apt-get update && apt-get install -y \
         less \
         sudo \
+        git \
+        zip \
+        msmtp \
         vim && \
     apt-get clean && \
     rm -r /var/lib/apt/lists/*;
 
+# configure sendmail
+RUN { \
+		echo "php_admin_value[sendmail_path] = $(which msmtp) -ti "; \
+	} >> /usr/local/etc/php-fpm.d/www.conf
+
 # install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin
+# from https://getcomposer.org/doc/faqs/how-to-install-composer-programmatically.md
+ADD install-composer.sh /tmp
+RUN /tmp/install-composer.sh && rm /tmp/install-composer.sh
 
 # set container to nyc time...
 RUN echo "America/New_York" > /etc/timezone
 
 # https://github.com/docker/docker/issues/8631
 RUN echo "export TERM=xterm" >> /etc/bash.bashrc
+
+# configure entrypoint
+COPY fpm-entrypoint.sh /usr/local/bin
+ENTRYPOINT ["fpm-entrypoint.sh"]

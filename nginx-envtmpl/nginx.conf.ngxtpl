@@ -29,7 +29,6 @@ http {
     # some ideas from https://www.linode.com/docs/websites/nginx/configure-nginx-for-optimized-performance
     sendfile                    {{ NGX_SENDFILE }};
     client_max_body_size        {{ NGX_CLIENT_MAX_BODY_SIZE }};
-    gzip                        {{ NGX_GZIP_ON_OFF }};
 
     keepalive_timeout   65;
     keepalive_requests  100000;
@@ -42,7 +41,7 @@ http {
     postpone_output              1460;
 
     #determined from http-overrides
-    #gzip  on;
+    gzip                {{ NGX_GZIP_ON_OFF }};
     gzip_vary           on;
     gzip_proxied        any;
     # leave this at default... don't want to spend TOO much effort
