@@ -67,3 +67,4 @@ RUN echo "export TERM=xterm" >> /etc/bash.bashrc
 # configure entrypoint
 COPY fpm-entrypoint.sh /usr/local/bin
 ENTRYPOINT ["fpm-entrypoint.sh"]
+CMD ["php-fpm"]

@@ -70,4 +70,3 @@ RUN cp "$WORDPRESS_ABS_PATH/wp-config.php" "$WORDPRESS_ABS_PATH/index.php" ./ &&
 # configure entrypoint
 COPY wordpress-entrypoint.sh /usr/local/bin
 ENTRYPOINT ["wordpress-entrypoint.sh"]
-CMD ["php-fpm"]
