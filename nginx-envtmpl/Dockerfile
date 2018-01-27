@@ -28,7 +28,8 @@ ENV NGX_CLIENT_MAX_BODY_SIZE 10m
 ENV NGX_GZIP_ON_OFF off
 ENV NGX_ERROR_LOG_LEVEL warn
 ENV NGX_SENDFILE on
-
+# default is to include
+ENV NGX_OMIT_GZIP_TYPES ''
 
 COPY ./nginx-envtmpl-entrypoint.sh /usr/local/bin/nginx-envtmpl-entrypoint.sh
 ENTRYPOINT ["nginx-envtmpl-entrypoint.sh"]

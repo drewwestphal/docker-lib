@@ -47,7 +47,9 @@ http {
     # leave this at default... don't want to spend TOO much effort
     #gzip_comp_level 9;
     gzip_http_version   1.1;
+    {% if not NGX_OMIT_GZIP_TYPES %}
     gzip_types          text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+    {% endif %}
     gzip_disable        "MSIE [1-6]\.(?!.*SV1)";
 
 
