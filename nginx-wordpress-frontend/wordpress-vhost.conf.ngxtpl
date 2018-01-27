@@ -10,4 +10,5 @@ server {
 
         include /etc/nginx/include/server-defaults.conf;
         include /etc/nginx/include/wordpress.conf;
+        include /etc/nginx/include/wordpress.conf.d/*.conf;
 }
