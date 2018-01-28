@@ -8,16 +8,20 @@ ln -fs /usr/local/src/CC2/wp-plugin /var/www/html/plugins/CC2;
 # so i just go through the pairs here
 # this is a hack to avoid restructuring the client plugin folders
 
-name_idx=0
-path_idx=1
-array=($CC2_PLUGIN_NAME_TO_PATH_LINES_SPACE_DELIMITED)
+dir_idx=0
+name_idx=1
+path_idx=2
+array=($CC2_SYMLINK_WPDIR_NAME_TARGETPATH_SPACE_DELIMITED)
 while [ $path_idx -lt ${#array[@]} ]; do
-    path="${array[$path_idx]}"
+    dir="${array[$dir_idx]}"
     name="${array[$name_idx]}"
-    echo "symlinking plugin [$name] to [$path]"
-    ln -fs "$path" "/var/www/html/plugins/$name"
-    ((name_idx+=2))
-    ((path_idx+=2))
+    target_path="${array[$path_idx]}"
+    link_name="/var/www/html/${dir}/${name}"
+    echo "link dir[$dir] name[$name] target_path[$target_path] link_name[$link_name]"
+    ln -fs "$target_path" "$link_name"
+    ((dir_idx+=3))
+    ((name_idx+=3))
+    ((path_idx+=3))
 done
 
 wp --require=$TGMPA_COMMAND_FILEPATH tgmpa-plugin install --all || true
