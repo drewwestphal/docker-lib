@@ -57,6 +57,7 @@ RUN { \
 # from https://getcomposer.org/doc/faqs/how-to-install-composer-programmatically.md
 ADD install-composer.sh /tmp
 RUN /tmp/install-composer.sh && rm /tmp/install-composer.sh
+ENV COMPOSER_ALLOW_SUPERUSER 1
 
 # set container to nyc time...
 RUN echo "America/New_York" > /etc/timezone
