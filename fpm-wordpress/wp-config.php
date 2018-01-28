@@ -105,13 +105,6 @@ define('WP_SITEURL', $baseUrl . '/wp');
 define('WP_CONTENT_DIR', getenv('WEB_ROOT'));
 define('WP_CONTENT_URL', $baseUrl);
 
-// NO MTA we use this plugin instead
-define('SENDGRID_SEND_METHOD', 'api');
-define('SENDGRID_CONTENT_TYPE', 'plaintext');
-define('SENDGRID_API_KEY', getenv('WORDPRESS_SENDGRID_API_KEY'));
-define('SENDGRID_FROM_NAME', getenv('WORDPRESS_SENDGRID_FROM_NAME'));
-define('SENDGRID_FROM_EMAIL', getenv('WORDPRESS_SENDGRID_FROM_EMAIL'));
-
 /**
  * Handle SSL reverse proxy (from https://www.variantweb.net/blog/wordpress-behind-an-nginx-ssl-reverse-proxy/)
  */
