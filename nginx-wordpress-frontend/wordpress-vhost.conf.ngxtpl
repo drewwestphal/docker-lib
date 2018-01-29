@@ -3,7 +3,7 @@ upstream fpm {
 }
 
 server {
-        server_name {{ WORDPRESS_SERVER_NAME }};
+        server_name {{ NGINX_SERVER_NAME_DIRECTIVE }};
         listen 80;
         port_in_redirect off;
         root {{ NGX_ROOT }};

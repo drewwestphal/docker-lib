@@ -5,6 +5,7 @@
 $requiredAll = [
     'WORDPRESS_MYSQL_DB_URL',
     'WORDPRESS_TABLE_PREFIX',
+    'WORDPRESS_HOME_URL',
 ];
 foreach($requiredAll as $requiredVar) {
     if(!getenv($requiredVar)) {
@@ -98,10 +99,17 @@ if(getenv('WORDPRESS_WP_DEBUG')) {
  */
 
 define('FS_METHOD', 'direct');
-// Set up a good server rule
-// We do this so the same site can be addressed by multiple names (there are certain use cases for this)
-// DO NOT LIST A SITE WITH MULTIPLE NAMES ON THE PUBLIC INTERNET
-$baseUrl = 'http' . (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'];
+if(isset($_SERVER['HTTP_HOST'])) {
+    // Set up a good server rule
+    // We do this so the same site can be addressed by multiple names (there are certain use cases for this)
+    // DO NOT LIST A SITE WITH MULTIPLE NAMES ON THE PUBLIC INTERNET
+    $baseUrl =
+        'http' . (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'];
+} else {
+    // this is necessary for, e.g., wp-cli, which doesn't have a
+    // SERVER env set as above
+    $baseUrl = getenv('WORDPRESS_HOME_URL');
+}
 define('WP_HOME', $baseUrl);
 define('WP_SITEURL', $baseUrl . '/wp');
 define('WP_CONTENT_DIR', getenv('WEB_ROOT'));
@@ -110,7 +118,7 @@ define('WP_CONTENT_URL', $baseUrl);
 /**
  * Handle SSL reverse proxy (from https://www.variantweb.net/blog/wordpress-behind-an-nginx-ssl-reverse-proxy/)
  */
-if($_SERVER['HTTP_X_FORWARDED_PROTO']??'' == 'https') {
+if(($_SERVER['HTTP_X_FORWARDED_PROTO']??'') == 'https') {
     $_SERVER['HTTPS'] = 'on';
 }
 
