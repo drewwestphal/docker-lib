@@ -1,0 +1,6 @@
+server {
+    listen       80  default_server;
+    server_name  _;
+
+    return {{ REDIRECT_STATUS_CODE }} {{ SCHEME_AND_FQDN }}$request_uri;
+}
