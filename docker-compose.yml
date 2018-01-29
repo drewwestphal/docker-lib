@@ -1,0 +1,47 @@
+version: '2'
+
+services:
+
+  # fpm
+  #  |
+  # fpm-wordpress
+  #  |
+  # fpm-wordpress-cc2
+
+  fpm:
+    image: drewwestphal/fpm
+    build: ./fpm
+
+  fpm-wordpress:
+    build: ./fpm-wordpress
+    image: drewwestphal/fpm-wordpress
+
+  fpm-wordpress-cc2:
+    build: ./fpm-wordpress-cc2
+    image: drewwestphal/fpm-wordpress-cc2
+
+  composer:
+    build: ./composer
+    image: drewwestphal/composer
+
+
+  #                   nginx-tmpl
+  #                    /       \
+  # nginx-wordpress-frontend   nginx-proxy
+
+  nginx-envtmpl:
+    image: drewwestphal/nginx-envtmpl
+    build: ./nginx-envtmpl
+
+  nginx-wordpress-frontend:
+    build: ./nginx-wordpress-frontend
+    image: drewwestphal/nginx-wordpress-frontend
+
+  nginx-cc2-frontend:
+    build: ./nginx-cc2-frontend
+    image: drewwestphal/nginx-cc2-frontend
+
+  nginx-redirect:
+    image: drewwestphal/nginx-redirect
+    build: ./nginx-redirect
+
