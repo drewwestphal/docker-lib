@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-ln -fs /usr/local/src/CC2/wp-plugin /var/www/html/plugins/CC2;
+ln -nfs /usr/local/src/CC2/wp-plugin /var/www/html/plugins/CC2;
 
 # link up as many plugins are we are given in our config
 # it seems like the way compose imports these variables loses lines
@@ -18,12 +18,13 @@ while [ $path_idx -lt ${#array[@]} ]; do
     target_path="${array[$path_idx]}"
     link_name="/var/www/html/${dir}/${name}"
     echo "link dir[$dir] name[$name] target_path[$target_path] link_name[$link_name]"
-    ln -fs "$target_path" "$link_name"
+    ln -nfs "$target_path" "$link_name"
     ((dir_idx+=3))
     ((name_idx+=3))
     ((path_idx+=3))
 done
 
-wp --require=$TGMPA_COMMAND_FILEPATH tgmpa-plugin install --all || true
+# turns out this sucks
+#wp --require=$TGMPA_COMMAND_FILEPATH tgmpa-plugin install --all || true
 
 exec wordpress-entrypoint.sh "$@"
