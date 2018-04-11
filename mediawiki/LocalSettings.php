@@ -50,6 +50,11 @@ $database_url = getenv('MEDIAWIKI_MYSQL_DB_URL');
 if(getenv('MEDIAWIKI_DEBUG')) {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
+
+    $wgShowExceptionDetails = true;
+    $wgShowDBErrorBacktrace = true;
+    $wgShowSQLErrors = true;
+
 } else {
     ini_set('display_errors', 0);
 }
