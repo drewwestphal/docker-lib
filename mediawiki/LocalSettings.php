@@ -11,15 +11,59 @@
 # https://www.mediawiki.org/wiki/Manual:Configuration_settings
 
 # Protect against web entry
-if ( !defined( 'MEDIAWIKI' ) ) {
-	exit;
+if(!defined('MEDIAWIKI')) {
+    exit;
 }
+
+/**
+ * DW ADDITIONS
+ * DW ADDITIONS
+ * DW ADDITIONS
+ * DW ADDITIONS
+ *
+ * This file modified for use with env variables from a file
+ * that was created using the auto installer from the stock
+ * library/mediawiki container
+ */
+
+// FIRST: check for required env vars
+$requiredAll = [
+    'MEDIAWIKI_MYSQL_DB_URL',
+    'MEDIAWIKI_FULLY_QUALIFIED_URL',
+    'MEDIAWIKI_SITE_NAME',
+    'MEDIAWIKI_SITE_NAMESPACE_INVARIANT',
+    'MEDIAWIKI_LOGO_IMAGE_RELPATH',
+    'MEDIAWIKI_EMAIL_FROM_ADDRESS',
+    'MEDIAWIKI_SECRET_KEY_64_CHAR',
+    'MEDIAWIKI_SECRET_UPGRADE_KEY_64_CHAR',
+    'MEDIAWIKI_PRIVACY_SETTING',
+];
+foreach($requiredAll as $requiredVar) {
+    if(!getenv($requiredVar)) {
+        echo "required:";
+        print_r($requiredAll);
+        die("Environment Variable $requiredVar is not set");
+    }
+}
+$database_url = getenv('MEDIAWIKI_MYSQL_DB_URL');
+
+if(getenv('MEDIAWIKI_DEBUG')) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+} else {
+    ini_set('display_errors', 0);
+}
+/**
+ *
+ * // END DW ADDITIONS
+ *
+ */
 
 ## Uncomment this to disable output compression
 # $wgDisableOutputCompression = true;
 
-$wgSitename = "JoCo Cruise Management";
-$wgMetaNamespace = "JoCo_Cruise_Management";
+$wgSitename = getenv('MEDIAWIKI_SITE_NAME');
+$wgMetaNamespace = getenv('MEDIAWIKI_SITE_NAMESPACE_INVARIANT');
 
 ## The URL base path to the directory containing the wiki;
 ## defaults for all runtime URL paths are based off of this.
@@ -29,36 +73,36 @@ $wgMetaNamespace = "JoCo_Cruise_Management";
 $wgScriptPath = "";
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = "http://mgmtwiki.local";
+$wgServer = getenv('MEDIAWIKI_FULLY_QUALIFIED_URL');
 
 ## The URL path to static resources (images, scripts, etc.)
 $wgResourceBasePath = $wgScriptPath;
 
 ## The URL path to the logo.  Make sure you change this from the default,
 ## or else you'll overwrite your logo when you upgrade!
-$wgLogo = "$wgResourceBasePath/resources/assets/wiki.png";
+$wgLogo = getenv('MEDIAWIKI_LOGO_IMAGE_RELPATH');
 
 ## UPO means: this is also a user preference option
 
 $wgEnableEmail = true;
 $wgEnableUserEmail = true; # UPO
 
-$wgEmergencyContact = "accounts@jococruise.com";
-$wgPasswordSender = "accounts@jococruise.com";
+$wgEmergencyContact = getenv('MEDIAWIKI_EMAIL_FROM_ADDRESS');
+$wgPasswordSender = getenv('MEDIAWIKI_EMAIL_FROM_ADDRESS');
 
 $wgEnotifUserTalk = false; # UPO
 $wgEnotifWatchlist = false; # UPO
 $wgEmailAuthentication = true;
 
 ## Database settings
-$wgDBtype = "mysql";
-$wgDBserver = "dh";
-$wgDBname = "mgmtwiki_local";
-$wgDBuser = "root";
-$wgDBpassword = "1234";
+$wgDBtype = parse_url($database_url, PHP_URL_SCHEME);
+$wgDBserver = parse_url($database_url, PHP_URL_HOST);
+$wgDBname = explode('/', parse_url($database_url, PHP_URL_PATH))[1];
+$wgDBuser = parse_url($database_url, PHP_URL_USER);
+$wgDBpassword = parse_url($database_url, PHP_URL_PASS);
 
 # MySQL specific settings
-$wgDBprefix = "";
+$wgDBprefix = getenv('MEDIAWIKI_TABLE_PREFIX');
 
 # MySQL table options to use during installation or update
 $wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
@@ -97,14 +141,14 @@ $wgShellLocale = "C.UTF-8";
 # Site language code, should be one of the list in ./languages/data/Names.php
 $wgLanguageCode = "en";
 
-$wgSecretKey = "069dd985649c4db56234d7fea82c4ab1f262ca661e438f431d7c0c43a0debd65";
+$wgSecretKey = getenv('MEDIAWIKI_SECRET_KEY_64_CHAR');
 
 # Changing this will log out all existing sessions.
 $wgAuthenticationTokenVersion = "1";
 
 # Site upgrade key. Must be set to a string (default provided) to turn on the
 # web installer while LocalSettings.php is in place
-$wgUpgradeKey = "d5ae764a8ad98a6c";
+$wgUpgradeKey = getenv('MEDIAWIKI_SECRET_UPGRADE_KEY_64_CHAR');
 
 ## For attaching licensing metadata to pages, and displaying an
 ## appropriate copyright notice / icon. GNU Free Documentation
@@ -118,9 +162,15 @@ $wgRightsIcon = "";
 $wgDiff3 = "/usr/bin/diff3";
 
 # The following permissions were set based on your choice in the installer
-$wgGroupPermissions['*']['createaccount'] = false;
-$wgGroupPermissions['*']['edit'] = false;
-$wgGroupPermissions['*']['read'] = false;
+
+switch(getenv('MEDIAWIKI_PRIVACY_SETTING')) {
+    case 'PRIVATE':
+    default:
+        $wgGroupPermissions['*']['createaccount'] = false;
+        $wgGroupPermissions['*']['edit'] = false;
+        $wgGroupPermissions['*']['read'] = false;
+        break;
+}
 
 ## Default skin: you can change the default skin. Use the internal symbolic
 ## names, ie 'vector', 'monobook':
@@ -128,10 +178,10 @@ $wgDefaultSkin = "vector";
 
 # Enabled skins.
 # The following skins were automatically enabled:
-wfLoadSkin( 'CologneBlue' );
-wfLoadSkin( 'Modern' );
-wfLoadSkin( 'MonoBook' );
-wfLoadSkin( 'Vector' );
+wfLoadSkin('CologneBlue');
+wfLoadSkin('Modern');
+wfLoadSkin('MonoBook');
+wfLoadSkin('Vector');
 
 
 # End of automatically generated settings.
