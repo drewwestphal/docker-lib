@@ -2,6 +2,10 @@ version: '2'
 
 services:
 
+  customize-vhost:
+    image: drewwestphal/customize-vhost
+    build: ./customize-vhost
+
   # fpm
   #  |
   # fpm-wordpress
