@@ -121,9 +121,58 @@ $wgMemCachedServers = [];
 
 ## To enable image uploads, make sure the 'images' directory
 ## is writable, then set this to true:
-$wgEnableUploads = false;
+$wgEnableUploads = (bool)(int)getenv('MEDIAWIKI_ENABLE_UPLOADS');
 $wgUseImageMagick = true;
 $wgImageMagickConvertCommand = "/usr/bin/convert";
+$wgFileExtensions = array_merge($wgFileExtensions,
+    array('doc', 'xls', 'mpp', 'pdf', 'ppt', 'xlsx', 'jpg',
+          'tiff', 'odt', 'odg', 'ods', 'odp'
+    )
+);
+// enable upload wizard functionality
+require_once("$IP/extensions/UploadWizard/UploadWizard.php");
+
+// set upload wizard to be the default upload method
+$wgExtensionFunctions[] = function() {
+    $GLOBALS['wgUploadNavigationUrl'] = SpecialPage::getTitleFor( 'UploadWizard' )->getLocalURL();
+    return true;
+};
+
+$wgUploadWizardConfig = array(
+    'debug'                   => false,
+    'autoAdd'                 => array(
+        'wikitext'   => array(
+            'This file was uploaded with the UploadWizard extension.'
+        ),
+        'categories' => array(
+            'Uploaded with UploadWizard'
+        ),
+    ), // Should be localised to the language of your wiki instance
+    'feedbackPage'            => 'Feedback about UploadWizard',
+    'altUploadForm'           => 'Special:Upload',
+    'fallbackToAltUploadForm' => false,
+    'enableFormData'          => true, // Should FileAPI uploads be used on supported browsers?
+    'enableMultipleFiles'     => true,
+    'enableMultiFileSelect'   => true,
+    'tutorial'                => array(
+        'skip' => true
+    ), // Skip the tutorial
+    'maxUploads'              => 50, // Number of uploads with one form - defaults to 50
+    'fileExtensions'          => $wgFileExtensions, // omitting this may cause errors
+);
+if(getenv('MEDIAWIKI_SKIP_UPLOAD_LICENSING')) {
+    $wgUploadWizardConfig['licensing'] = array(
+        'ownWorkDefault' => 'own',
+        'ownWork'        => array(
+            'type'     => 'or',
+            'template' => 'licensing', // this adds a link to Template:Licensing to the file info page
+            'licenses' => array(
+                'generic',
+            )
+        ),
+    );
+}
+
 
 # InstantCommons allows wiki to use images from https://commons.wikimedia.org
 $wgUseInstantCommons = false;
