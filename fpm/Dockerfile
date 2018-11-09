@@ -11,12 +11,13 @@ RUN set -ex; \
 		libjpeg-dev \
 		libmcrypt-dev \
 		libpng-dev \
+		zlib1g-dev \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
 	docker-php-ext-configure intl; \
-	docker-php-ext-install gd mysqli opcache intl pdo pdo_mysql
+	docker-php-ext-install gd mysqli opcache intl pdo pdo_mysql zip
 # TODO consider removing the *-dev deps and only keeping the necessary lib* packages
 
 # the above installs an old version of libicu from ubuntu, which
