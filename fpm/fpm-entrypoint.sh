@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-cat >> /etc/msmtprc <<-EOCFG
+cat > /etc/msmtprc <<-EOCFG
 account            default
 host               smtp.sendgrid.net
 port               587

@@ -20,7 +20,7 @@ COPY ./nginx.conf.ngxtpl /etc/nginx/nginx.conf.ngxtpl
 COPY ./server-defaults.conf /etc/nginx/include/server-defaults.conf
 COPY ./fastcgi.conf /etc/nginx/fastcgi.conf
 
-RUN mkdir -p /etc/nginx/include/wordpres.conf.d
+RUN mkdir -p /etc/nginx/include/wordpress.conf.d
 
 # ENVIRONMENT VARIABLES
 ENV NGX_ROOT /var/www/html
