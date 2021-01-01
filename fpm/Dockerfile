@@ -1,4 +1,4 @@
-FROM php:7.2.1-fpm
+FROM php:7.3.12-fpm
 
 # from https://github.com/docker-library/wordpress/blob/master/php7.1/fpm/Dockerfile
 # installation of base wordpress necessities
@@ -12,6 +12,7 @@ RUN set -ex; \
 		libmcrypt-dev \
 		libpng-dev \
 		zlib1g-dev \
+		libzip-dev \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
