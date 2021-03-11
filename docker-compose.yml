@@ -19,10 +19,15 @@ services:
   fpm-wordpress:
     build: ./fpm-wordpress
     image: drewwestphal/fpm-wordpress
+    #stdin_open: true
+    #tty: true
+    #command: /bin/bash
+    #entrypoint: /usr/bin/env
 
   fpm-wordpress-cc2:
     build: ./fpm-wordpress-cc2
     image: drewwestphal/fpm-wordpress-cc2
+
 
   composer:
     build: ./composer
@@ -50,6 +55,6 @@ services:
     build: ./nginx-redirect
 
 
-  mediawiki:
-    image: drewwestphal/mediawiki
-    build: ./mediawiki
+  #mediawiki:
+  #  image: drewwestphal/mediawiki
+  #  build: ./mediawiki

@@ -1,9 +1,10 @@
 FROM drewwestphal/fpm
 
 ## IMPORTANT CONFIGURABLES
-ENV CONTAINER_WP_VERSION 5.3
+ENV CONTAINER_WP_VERSION 5.7
 ENV CONTAINER_WP_LOCALE en_US
-ENV WP_CLI_VERSION 2.3.0
+# ao 2/18/20 2.4.1 is busted
+ENV WP_CLI_VERSION 2.4.0
 ENV WP_CLI_CONF_DIR /var/wp-cli
 ENV WP_CLI_USER www-data
 
@@ -50,7 +51,9 @@ RUN mkdir -p "$WORDPRESS_ABS_PATH" && wp-perms.sh "$WORDPRESS_ABS_PATH";
 RUN wp core download \
     --path="$WORDPRESS_ABS_PATH" \
     --version="$CONTAINER_WP_VERSION"  \
-    --locale="$CONTAINER_WP_LOCALE";
+    --locale="$CONTAINER_WP_LOCALE" \
+    ;
+
 
 # create a subdirectory install
 COPY wp-config.php "$WORDPRESS_ABS_PATH/wp-config.php"

@@ -1,8 +1,9 @@
-FROM php:7.3.12-fpm
+FROM php:7.3.27-fpm
 
 # from https://github.com/docker-library/wordpress/blob/master/php7.1/fpm/Dockerfile
 # installation of base wordpress necessities
 # install the PHP extensions we need
+# installed memecached 2/18/20 per
 RUN set -ex; \
 	\
 	apt-get update; \
@@ -11,15 +12,19 @@ RUN set -ex; \
 		libjpeg-dev \
 		libmcrypt-dev \
 		libpng-dev \
+		libmemcached-dev \
 		zlib1g-dev \
 		libzip-dev \
 	; \
+	pecl install memcached-3.1.5; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
 	docker-php-ext-configure intl; \
-	docker-php-ext-install gd mysqli opcache intl pdo pdo_mysql zip
+	docker-php-ext-install gd mysqli opcache intl pdo pdo_mysql zip; \
+	docker-php-ext-enable memcached;
 # TODO consider removing the *-dev deps and only keeping the necessary lib* packages
+
 
 # the above installs an old version of libicu from ubuntu, which
 # is not up to date for symfony use
