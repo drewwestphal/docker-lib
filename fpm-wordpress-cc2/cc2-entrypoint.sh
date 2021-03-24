@@ -16,8 +16,11 @@ while [ $path_idx -lt ${#array[@]} ]; do
     dir="${array[$dir_idx]}"
     name="${array[$name_idx]}"
     target_path="${array[$path_idx]}"
-    link_name="/var/www/html/${dir}/${name}"
+    link_dir="/var/www/html/${dir}"
+    link_name="${link_dir}/${name}"
     echo "link dir[$dir] name[$name] target_path[$target_path] link_name[$link_name]"
+    # e.g. mu plugins doesn't necessarily exist
+    mkdir -p "$link_dir"
     ln -nfs "$target_path" "$link_name"
     ((dir_idx+=3))
     ((name_idx+=3))

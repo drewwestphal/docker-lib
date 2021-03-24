@@ -51,6 +51,7 @@ RUN apt-get update && apt-get install -y \
         git \
         zip \
         msmtp \
+        wget \
         vim && \
     apt-get clean && \
     rm -r /var/lib/apt/lists/*;
@@ -60,11 +61,13 @@ RUN { \
 		echo "php_admin_value[sendmail_path] = $(which msmtp) -ti "; \
 	} >> /usr/local/etc/php-fpm.d/www.conf
 
+ENV COMPOSER_VERSION 1.10.20
+
 # install composer
 # from https://getcomposer.org/doc/faqs/how-to-install-composer-programmatically.md
-ADD install-composer.sh /tmp
-RUN /tmp/install-composer.sh && rm /tmp/install-composer.sh
+RUN wget https://raw.githubusercontent.com/composer/getcomposer.org/fe1f339fb41eb09a49bbdbda83bb8043d02e24fd/web/installer -O - -q | php -- --version $COMPOSER_VERSION
 ENV COMPOSER_ALLOW_SUPERUSER 1
+RUN chmod +x composer.phar && mv composer.phar /bin/composer
 
 # set container to nyc time...
 RUN echo "America/New_York" > /etc/timezone
